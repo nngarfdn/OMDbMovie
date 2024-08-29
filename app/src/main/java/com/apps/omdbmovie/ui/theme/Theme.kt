@@ -1,6 +1,5 @@
-package com.apps.omdbmovie.presentation.theme
+package com.apps.omdbmovie.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

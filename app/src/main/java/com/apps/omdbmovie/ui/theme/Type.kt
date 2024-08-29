@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.presentation.theme
+package com.apps.omdbmovie.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

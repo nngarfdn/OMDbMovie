@@ -1,4 +1,4 @@
-package com.apps.omdbmovie
+package com.apps.omdbmovie.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,8 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.apps.omdbmovie.presentation.theme.OMDbMovieTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.apps.omdbmovie.ui.screen.movies.MovieViewModel
+import com.apps.omdbmovie.ui.theme.OMDbMovieTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +25,6 @@ class MainActivity : ComponentActivity() {
             OMDbMovieTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -31,7 +34,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier,
+             movieViewModel: MovieViewModel = viewModel()
+) {
+    val name = movieViewModel.getName()
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -42,6 +48,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     OMDbMovieTheme {
-        Greeting("Android")
+//        Greeting()
     }
 }

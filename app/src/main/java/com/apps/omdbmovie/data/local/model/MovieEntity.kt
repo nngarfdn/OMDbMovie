@@ -1,5 +1,14 @@
 package com.apps.omdbmovie.data.local.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "movies")
 data class MovieEntity (
-    val id : Int,
+    @PrimaryKey
+    val imdbID: String = "",
+    val type: String = "",
+    val poster: String = "",
+    val title: String = "",
+    val year: String = "",
 )

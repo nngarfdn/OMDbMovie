@@ -13,8 +13,9 @@ logging-interceptor = "4.9.1"
 navigation-compose = "2.7.5"
 kotlin-coroutines = "1.7.3"
 hilt = "2.48"
-room = "2.5.2"
+room = "2.6.1"
 paging = "3.2.0"
+
 
 
 
@@ -42,29 +43,35 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 # Hilt for Dependency Injection
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-# Room for Local Database
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+
 # Paging
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 
+# Hilt Compose
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.0.0" }
+
+# Add Room libraries
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+hilt-android-gradle-plugin = { id = "dagger.hilt.android.plugin", version.ref = "hilt" }
 
 
 [bundles]
 network = ["retrofit","converter-gson","logging-interceptor"]
 navigation = ["navigation-runtime-ktx","navigation-compose"]
 coroutines = ["kotlinx-coroutines-core","kotlinx-coroutines-android"]
-hilt = ["hilt-android","hilt-compiler"]
-room = ["room-runtime","room-compiler","room-ktx"]
+hilt = ["hilt-android","hilt-android-compiler"]
 paging = ["paging-runtime","paging-compose"]
+room = ["androidx-room-runtime","androidx-room-ktx"]
 
 
 
