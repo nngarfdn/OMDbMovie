@@ -58,38 +58,38 @@ fun Greeting(modifier: Modifier = Modifier, movieViewModel: MovieViewModel = hil
         movieViewModel.getSearchMovies("friends")
     }
 
-    val movies = movieViewModel.searchMovies.collectAsLazyPagingItems()
-
-    Column(modifier = modifier.padding(16.dp)) {
-
-        LazyColumn {
-            items(movies.itemCount) { index ->
-                val movie = movies[index]
-                if (movie != null) {
-                    Text(text = movie.title)
-                }
-            }
-
-            // Handle loading more items when reaching the end
-            when (movies.loadState.append) {
-                is LoadState.Loading -> {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-                    }
-                }
-                is LoadState.Error -> {
-                    item {
-                        Text("Error loading more movies", color = MaterialTheme.colorScheme.error)
-                    }
-                }
-                else -> {}
-            }
-        }
-    }
+//    val movies = movieViewModel.searchMovies.collectAsLazyPagingItems()
+//
+//    Column(modifier = modifier.padding(16.dp)) {
+//
+//        LazyColumn {
+//            items(movies.itemCount) { index ->
+//                val movie = movies[index]
+//                if (movie != null) {
+//                    Text(text = movie.title)
+//                }
+//            }
+//
+//            // Handle loading more items when reaching the end
+//            when (movies.loadState.append) {
+//                is LoadState.Loading -> {
+//                    item {
+//                        CircularProgressIndicator(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(16.dp)
+//                        )
+//                    }
+//                }
+//                is LoadState.Error -> {
+//                    item {
+//                        Text("Error loading more movies", color = MaterialTheme.colorScheme.error)
+//                    }
+//                }
+//                else -> {}
+//            }
+//        }
+//    }
 }
 
 

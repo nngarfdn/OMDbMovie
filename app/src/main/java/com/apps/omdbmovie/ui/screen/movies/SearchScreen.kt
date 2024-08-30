@@ -1,12 +1,33 @@
 package com.apps.omdbmovie.ui.screen.movies
 
-import androidx.compose.foundation.layout.*
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -14,40 +35,55 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.apps.omdbmovie.ui.component.MovieListItem
 import com.apps.omdbmovie.ui.component.ShimmerMovieListItem
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(FlowPreview::class)
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hiltViewModel()) {
-    var query by remember { mutableStateOf("") }
-    val debounceQuery = remember { MutableStateFlow("") }
+    var query by remember { mutableStateOf("friend") }
+    var retry by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    LaunchedEffect(query) {
-        debounceQuery.value = query
-    }
+    // Connectivity state
+    val isConnected = remember { mutableStateOf(checkInternetConnection(context)) }
 
-    LaunchedEffect(debounceQuery) {
-        debounceQuery
-            .debounce(500)
-            .distinctUntilChanged()
-            .collect { searchQuery ->
-                if (searchQuery.isNotEmpty()) {
-                    viewModel.getSearchMovies(searchQuery)
-                }
+    // Observe connectivity changes
+    LaunchedEffect(Unit) {
+        observeConnectivityAsFlow(context).collect { connected ->
+            isConnected.value = connected
+            if (connected && retry) {
+                viewModel.getSearchMovies(query) // Refresh data when reconnected
+                retry = false
             }
+        }
     }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Search Input
         TextField(
             value = query,
-            onValueChange = { query = it },
+            onValueChange = {
+                query = it
+                retry = false // Reset retry when the query changes
+            },
             label = { Text("Search Movies") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         )
+
+        // Debounce logic using LaunchedEffect
+        LaunchedEffect(query) {
+            snapshotFlow { query }
+                .debounce(500) // 500ms debounce
+                .distinctUntilChanged()
+                .collect { debouncedQuery ->
+                    viewModel.getSearchMovies(debouncedQuery)
+                }
+        }
 
         if (query.isEmpty()) {
             // Show initial message
@@ -82,17 +118,69 @@ fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hilt
                 }
 
                 // Handle error state
-                if (moviesPagingData.loadState.refresh is LoadState.Error) {
-                    val e = moviesPagingData.loadState.refresh as LoadState.Error
+                if (moviesPagingData.loadState.refresh is LoadState.Error || !isConnected.value) {
                     item {
-                        Text(
-                            text = "Error: ${e.error.localizedMessage}",
-                            color = Color.Red,
-                            modifier = Modifier.fillMaxWidth().padding(16.dp)
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = if (!isConnected.value) {
+                                    "No internet connection. Please check your connection."
+                                } else {
+                                    "Error: Unable to load data."
+                                },
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(onClick = {
+                                if (isConnected.value) {
+                                    retry = true // Retry fetching movies
+                                    viewModel.getSearchMovies(query)
+                                } else {
+                                    // Notify user to check connectivity
+                                    // Optional: Display a Snackbar or Toast message here
+                                }
+                            }) {
+                                Text("Retry")
+                            }
+                        }
                     }
                 }
             }
         }
     }
 }
+
+// Helper function to check internet connection
+fun checkInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork = connectivityManager.activeNetworkInfo
+    return activeNetwork != null && activeNetwork.isConnected
+}
+
+// Function to observe connectivity changes
+fun observeConnectivityAsFlow(context: Context): StateFlow<Boolean> {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkRequest = NetworkRequest.Builder().build()
+    val _connectivityStatus = MutableStateFlow(checkInternetConnection(context))
+
+    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            _connectivityStatus.value = true
+        }
+
+        override fun onLost(network: Network) {
+            _connectivityStatus.value = false
+        }
+    }
+
+    connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+    return _connectivityStatus
+}
+
+
