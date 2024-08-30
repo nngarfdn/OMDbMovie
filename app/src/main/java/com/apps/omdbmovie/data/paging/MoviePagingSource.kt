@@ -1,5 +1,6 @@
 package com.apps.omdbmovie.data.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.apps.omdbmovie.data.local.db.OmdbDao
@@ -12,42 +13,44 @@ import javax.inject.Inject
 
 class MoviePagingSource @Inject constructor(
     private val apiService: ApiService,
-    private val query: String,
-    private val omdbDao: OmdbDao
+    private val query: String
 ) : PagingSource<Int, MovieEntity>() {
+    private val TAG = "MoviePagingSource"
+
+    init {
+        Log.d(TAG, "MoviePagingSource initialized with query: $query")
+    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieEntity> {
-        val page = params.key ?: 1 // Start at the first page if no key is specified
+        val page = params.key ?: 1 // Start from the first page if no key is specified
+        Log.d(TAG, "load method called with page: $page")
 
         return try {
             // Fetch movies from the API
             val response = apiService.getMovies(query = query, page = page)
+            Log.d(TAG, "Response: ${response.search.size} movies fetched")
 
-            // Map the response to a list of MovieEntity objects
+            // Map response to a list of MovieEntity objects
             val movies = MovieDataMapper.mapMovieSearchResponseToMovieEntity(response)
 
-            // Save the first page of data to Room
-            if (page == 1) {
-                omdbDao.insertMovies(movies)
-            }
-
-            // Return the loaded data and the next/previous keys
+            // Return the loaded data and next/previous keys
             LoadResult.Page(
                 data = movies,
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (movies.isEmpty()) null else page + 1
             )
         } catch (e: IOException) {
-            // Handle IO exceptions (e.g., network failures)
+            Log.e(TAG, "IOException: ${e.message}", e)
             LoadResult.Error(e)
         } catch (e: HttpException) {
-            // Handle HTTP exceptions (e.g., API errors)
+            Log.e(TAG, "HttpException: ${e.message}", e)
             LoadResult.Error(e)
         }
     }
 
     override fun getRefreshKey(state: PagingState<Int, MovieEntity>): Int? {
-        // Return the key for the closest page to the current position
+        Log.d(TAG, "getRefreshKey called")
+        // Return the key for the page closest to the current position
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)

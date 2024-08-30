@@ -56,9 +56,12 @@ dependencies {
     implementation(libs.bundles.coroutines)
     kapt(libs.androidx.room.compiler)
     implementation(libs.bundles.room)
-    kapt("com.google.dagger:hilt-compiler:2.48")
-    implementation("com.google.dagger:hilt-android:2.48")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.room:room-paging:2.5.0") // Add this line
+    implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("com.google.accompanist:accompanist-placeholder-material:0.31.5-beta")
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.androidx.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
     testImplementation(libs.junit)
