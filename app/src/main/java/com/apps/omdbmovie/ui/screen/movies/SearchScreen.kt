@@ -1,19 +1,9 @@
 package com.apps.omdbmovie.ui.screen.movies
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,19 +13,36 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.apps.omdbmovie.ui.component.MovieListItem
 import com.apps.omdbmovie.ui.component.ShimmerMovieListItem
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 
+@OptIn(FlowPreview::class)
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hiltViewModel()) {
     var query by remember { mutableStateOf("") }
+    val debounceQuery = remember { MutableStateFlow("") }
+
+    LaunchedEffect(query) {
+        debounceQuery.value = query
+    }
+
+    LaunchedEffect(debounceQuery) {
+        debounceQuery
+            .debounce(500)
+            .distinctUntilChanged()
+            .collect { searchQuery ->
+                if (searchQuery.isNotEmpty()) {
+                    viewModel.getSearchMovies(searchQuery)
+                }
+            }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         // Search Input
         TextField(
             value = query,
-            onValueChange = {
-                query = it
-                viewModel.getSearchMovies(query)
-            },
+            onValueChange = { query = it },
             label = { Text("Search Movies") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,4 +96,3 @@ fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hilt
         }
     }
 }
-
