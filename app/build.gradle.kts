@@ -56,9 +56,9 @@ dependencies {
     implementation(libs.bundles.coroutines)
     kapt(libs.androidx.room.compiler)
     implementation(libs.bundles.room)
-    implementation("androidx.room:room-paging:2.5.0") // Add this line
-    implementation("io.coil-kt:coil-compose:2.3.0")
-    implementation("com.google.accompanist:accompanist-placeholder-material:0.31.5-beta")
+    implementation(libs.androidx.room.paging) // Add this line
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.placeholder.material)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
     kapt(libs.androidx.hilt.compiler)
@@ -72,18 +72,18 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    testImplementation ("io.mockk:mockk:1.13.2")
-    testImplementation ("org.junit.jupiter:junit-jupiter-api:5.9.0")
-    testImplementation ("org.junit.jupiter:junit-jupiter-engine:5.9.0")
-    testImplementation ("androidx.arch.core:core-testing:2.1.0")
-    testImplementation ("androidx.paging:paging-common:3.1.1")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    testImplementation ("app.cash.turbine:turbine:0.5.2")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.kotlinx.coroutines.core)
+    testImplementation (libs.mockk)
+    testImplementation (libs.junit.jupiter.api)
+    testImplementation (libs.junit.jupiter.engine)
+    testImplementation (libs.androidx.core.testing)
+    testImplementation (libs.androidx.paging.common)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.turbine)
+    testImplementation (libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.hilt.android.testing.v244)
+    kaptAndroidTest(libs.hilt.android.compiler)
 
 
 
