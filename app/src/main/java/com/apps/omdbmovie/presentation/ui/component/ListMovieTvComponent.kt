@@ -1,6 +1,5 @@
-package com.apps.omdbmovie.ui.component
+package com.apps.omdbmovie.presentation.ui.component
 
-import android.graphics.Movie
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

@@ -5,6 +5,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.apps.omdbmovie.data.local.model.MovieEntity
 import com.apps.omdbmovie.domain.usecase.GetMovieUseCase
+import com.apps.omdbmovie.presentation.ui.screen.movies.MovieViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals

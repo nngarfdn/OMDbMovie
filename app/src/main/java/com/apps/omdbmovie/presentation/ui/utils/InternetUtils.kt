@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.ui.utils
+package com.apps.omdbmovie.presentation.ui.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -16,19 +16,19 @@ fun checkInternetConnection(context: Context): Boolean {
 fun observeConnectivityAsFlow(context: Context): StateFlow<Boolean> {
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkRequest = NetworkRequest.Builder().build()
-    val _connectivityStatus = MutableStateFlow(checkInternetConnection(context))
+    val connectivityStatus = MutableStateFlow(checkInternetConnection(context))
 
     val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            _connectivityStatus.value = true
+            connectivityStatus.value = true
         }
 
         override fun onLost(network: Network) {
-            _connectivityStatus.value = false
+            connectivityStatus.value = false
         }
     }
 
     connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
-    return _connectivityStatus
+    return connectivityStatus
 }

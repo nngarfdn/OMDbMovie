@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.ui.theme
+package com.apps.omdbmovie.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

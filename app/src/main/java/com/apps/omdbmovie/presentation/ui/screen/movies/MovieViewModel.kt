@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.ui.screen.movies
+package com.apps.omdbmovie.presentation.ui.screen.movies
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

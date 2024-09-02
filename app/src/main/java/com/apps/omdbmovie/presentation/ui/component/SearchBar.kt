@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.ui.component
+package com.apps.omdbmovie.presentation.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

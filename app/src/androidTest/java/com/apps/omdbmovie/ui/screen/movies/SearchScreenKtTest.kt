@@ -1,11 +1,15 @@
 package com.apps.omdbmovie.ui.screen.movies
 
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.ar.core.Config
+import com.apps.omdbmovie.presentation.ui.MainActivity
+import com.apps.omdbmovie.presentation.ui.component.ShimmerMovieListItem
+import com.apps.omdbmovie.presentation.ui.screen.movies.MovieViewModel
+import com.apps.omdbmovie.presentation.ui.screen.movies.SearchScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.HiltTestApplication
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,7 +23,7 @@ class SearchScreenTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before
     fun init() {
@@ -29,7 +33,7 @@ class SearchScreenTest {
     @Test
     fun testSearchBarInput() {
         composeTestRule.setContent {
-            SearchScreen()
+            SearchScreen(viewModel = hiltViewModel<MovieViewModel>())
         }
     }
 }

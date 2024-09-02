@@ -1,4 +1,4 @@
-package com.apps.omdbmovie.ui.screen.movies
+package com.apps.omdbmovie.presentation.ui.screen.movies
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,13 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.apps.omdbmovie.ui.component.EmptySearchComponent
-import com.apps.omdbmovie.ui.component.ErrorStateComponent
-import com.apps.omdbmovie.ui.component.MovieListItem
-import com.apps.omdbmovie.ui.component.SearchBar
-import com.apps.omdbmovie.ui.component.ShimmerMovieListItem
-import com.apps.omdbmovie.ui.utils.checkInternetConnection
-import com.apps.omdbmovie.ui.utils.observeConnectivityAsFlow
+import com.apps.omdbmovie.presentation.ui.component.EmptySearchComponent
+import com.apps.omdbmovie.presentation.ui.component.ErrorStateComponent
+import com.apps.omdbmovie.presentation.ui.component.MovieListItem
+import com.apps.omdbmovie.presentation.ui.component.SearchBar
+import com.apps.omdbmovie.presentation.ui.component.ShimmerMovieListItem
+import com.apps.omdbmovie.presentation.ui.utils.checkInternetConnection
+import com.apps.omdbmovie.presentation.ui.utils.observeConnectivityAsFlow
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    var query by remember { mutableStateOf("friend") }
+    var query by remember { mutableStateOf("") }
     var retry by remember { mutableStateOf(false) }
     val isConnected = remember { mutableStateOf(checkInternetConnection(context)) }
 
