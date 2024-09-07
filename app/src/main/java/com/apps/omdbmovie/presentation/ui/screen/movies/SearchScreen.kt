@@ -75,21 +75,24 @@ fun SearchScreen(modifier: Modifier = Modifier, viewModel: MovieViewModel = hilt
             val moviesPagingData = viewModel.searchMovies.collectAsLazyPagingItems()
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                if (moviesPagingData.loadState.refresh is LoadState.Loading) {
-                    items(10) {
-                        ShimmerMovieListItem()
+                when {
+                    moviesPagingData.loadState.refresh is LoadState.Loading -> {
+                        items(10) {
+                            ShimmerMovieListItem()
+                        }
                     }
-                }
-                if (moviesPagingData.itemCount == 0 && moviesPagingData.loadState.refresh !is LoadState.Loading) {
-                    item {
-                        EmptySearchComponent(query = query)
+                    moviesPagingData.itemCount == 0 && moviesPagingData.loadState.refresh !is LoadState.Loading -> {
+                        item {
+                            EmptySearchComponent(query = query)
+                        }
                     }
-                } else {
-                    // Display loaded movies
-                    items(moviesPagingData.itemCount) { position ->
-                        val movie = moviesPagingData[position]
-                        if (movie != null) {
-                            MovieListItem(movie = movie)
+                    else -> {
+                        // Display loaded movies
+                        items(moviesPagingData.itemCount) { position ->
+                            val movie = moviesPagingData[position]
+                            if (movie != null) {
+                                MovieListItem(movie = movie)
+                            }
                         }
                     }
                 }
